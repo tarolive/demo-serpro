@@ -83,6 +83,6 @@ def predict() -> dict:
             'prediction' : loss
         }
 
-        elasticsearch_client.update(index = ELASTICSEARCH_INDEX, id = id, body = document)
+        elasticsearch_client.update(index = ELASTICSEARCH_INDEX, id = id, doc = document)
 
     return {}
