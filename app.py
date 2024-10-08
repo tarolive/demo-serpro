@@ -1,12 +1,15 @@
-from elasticsearch import Elasticsearch
-from flask         import Flask, request
-from os            import getenv
-from requests      import get
+from elasticsearch          import Elasticsearch
+from flask                  import Flask, request
+from os                     import getenv
+from requests               import get
+from tensorflow.saved_model import load
+
+import tensorflow as tf
 
 ELASTICSEARCH_HOST           = getenv('ELASTICSEARCH_HOST')
 ELASTICSEARCH_USERNAME       = getenv('ELASTICSEARCH_USERNAME')
 ELASTICSEARCH_PASSWORD       = getenv('ELASTICSEARCH_PASSWORD')
-ELASTICSEARCH_DOCUMENT_INDEX = getenv('ELASTICSEARCH_DOCUMENT_INDEX')
+ELASTICSEARCH_INDEX          = 'ecg'
 TELEGRAM_TOKEN               = getenv('TELEGRAM_TOKEN')
 TELEGRAM_API                 = f'https://api.telegram.org/bot{ TELEGRAM_TOKEN }'
 
@@ -19,10 +22,11 @@ elasticsearch_client = Elasticsearch(
 )
 
 chat_ids = []
+model    = load('model/')
 
 
 @app.route('/', methods = ['POST'])
-def add_to_chat_list() -> dict:
+def add_to_chat_ids() -> dict:
 
     message = request.json
     text    = message['text']
@@ -30,7 +34,7 @@ def add_to_chat_list() -> dict:
 
     if not text.startswith('/add'):
 
-        return 0
+        return {}
 
     if chat_id not in chat_ids:
 
@@ -43,3 +47,16 @@ def add_to_chat_list() -> dict:
 
     api = f'{ TELEGRAM_API }/sendMessage'
     get(url = api, params = params)
+
+
+@app.route('/predict', methods = ['GET', 'POST'])
+def predict() -> dict:
+
+    query = {}
+
+    result = elasticsearch_client.search(index = ELASTICSEARCH_INDEX, query = query, size = 5)
+    result = result['hits']['hits']
+
+    for item in result: pass
+
+    return {}
