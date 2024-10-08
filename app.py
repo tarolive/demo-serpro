@@ -97,7 +97,10 @@ def predict() -> dict:
             if severity == 1:
 
                 reply_markup = {
-                    'inline_keyboard' : [[{ 'text' : 'Yes', 'callback_data' : '/open_ticket' }]]
+                    'keyboard' : [
+                        [{ 'text' : 'Yes'}],
+                        [{ 'text' : 'No'}]
+                    ]
                 }
 
                 sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', reply_markup)
