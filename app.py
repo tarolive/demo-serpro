@@ -72,11 +72,11 @@ def predict() -> dict:
         reconstruction = model.serve([input])
         loss           = mae(reconstruction, [input]).numpy()[0]
 
-        severity = 5 if loss >= 0
-        severity = 4 if loss >= 0.007
-        severity = 3 if loss >= 0.014
-        severity = 2 if loss >= 0.021
-        severity = 1 if loss >= 0.035
+        if loss >= 0.000: severity = 5
+        if loss >= 0.007: severity = 4
+        if loss >= 0.014: severity = 3
+        if loss >= 0.021: severity = 2
+        if loss >= 0.035: severity = 1
 
         document = {
             'severity'   : severity,
