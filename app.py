@@ -4,6 +4,9 @@ from os                      import getenv
 from requests                import get
 from tensorflow.keras.losses import mae
 from tensorflow.saved_model  import load
+from urllib3                 import disable_warnings
+
+disable_warnings()
 
 ELASTICSEARCH_HOST           = getenv('ELASTICSEARCH_HOST')
 ELASTICSEARCH_USERNAME       = getenv('ELASTICSEARCH_USERNAME')
@@ -47,6 +50,8 @@ def add_to_chat_ids() -> dict:
     api = f'{ TELEGRAM_API }/sendMessage'
     get(url = api, params = params)
 
+    return {}
+
 
 @app.route('/predict', methods = ['GET', 'POST'])
 def predict() -> dict:
@@ -87,7 +92,7 @@ def predict() -> dict:
 
         for chat_id in chat_ids:
 
-            sendMessage(chat_id, f'id : { id } | severity : { severity } | prediction : { loss }')
+            sendMessage(chat_id, f'Id : { id } | Severity : { severity } | Prediction : { loss }')
 
             if severity == 1:
 
