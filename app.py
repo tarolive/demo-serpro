@@ -77,11 +77,12 @@ def predict() -> dict:
         reconstruction = model.serve([input])
         loss           = mae(reconstruction, [input]).numpy()[0]
 
-        if loss >= 0.000: severity = 5
-        if loss >= 0.007: severity = 4
-        if loss >= 0.014: severity = 3
-        if loss >= 0.021: severity = 2
-        if loss >= 0.035: severity = 1
+        severity = 5
+
+        if loss <= 0.056: severity = 4
+        if loss <= 0.049: severity = 3
+        if loss <= 0.042: severity = 2
+        if loss <= 0.035: severity = 1
 
         document = {
             'severity'   : severity,
@@ -97,7 +98,7 @@ def predict() -> dict:
             if severity == 1:
 
                 reply_markup = {
-                    'keyboard' : [
+                    'inline_keyboard' : [
                         [{ 'text' : 'Yes'}],
                         [{ 'text' : 'No'}]
                     ]
