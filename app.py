@@ -85,4 +85,28 @@ def predict() -> dict:
 
         elasticsearch_client.update(index = ELASTICSEARCH_INDEX, id = id, doc = document)
 
+        for chat_id in chat_ids:
+
+            sendMessage(chat_id, f'id : { id } | severity : { severity } | prediction : { loss }')
+
+            if severity == 1:
+
+                reply_markup = {
+                    'inline_keyboard' : [[{ 'text' : 'Yes', 'callback_data' : '/open_ticket' }]]
+                }
+
+                sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', reply_markup)
+
     return {}
+
+
+def sendMessage(chat_id, text, reply_markup = None):
+
+    params = {
+        'chat_id'      : chat_id,
+        'text'         : text,
+        'reply_markup' : reply_markup
+    }
+
+    api = f'{ TELEGRAM_API }/sendMessage'
+    get(url = api, params = params)
