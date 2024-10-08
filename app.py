@@ -1,10 +1,9 @@
-from elasticsearch          import Elasticsearch
-from flask                  import Flask, request
-from os                     import getenv
-from requests               import get
-from tensorflow.saved_model import load
-
-import tensorflow as tf
+from elasticsearch           import Elasticsearch
+from flask                   import Flask, request
+from os                      import getenv
+from requests                import get
+from tensorflow.keras.losses import mae
+from tensorflow.saved_model  import load
 
 ELASTICSEARCH_HOST           = getenv('ELASTICSEARCH_HOST')
 ELASTICSEARCH_USERNAME       = getenv('ELASTICSEARCH_USERNAME')
@@ -52,11 +51,38 @@ def add_to_chat_ids() -> dict:
 @app.route('/predict', methods = ['GET', 'POST'])
 def predict() -> dict:
 
-    query = {}
+    query = {
+        'bool' : {
+            'must' : {
+                'match' : {
+                    'severity' : 0
+                }
+            }
+        }
+    }
 
     result = elasticsearch_client.search(index = ELASTICSEARCH_INDEX, query = query, size = 5)
     result = result['hits']['hits']
 
-    for item in result: pass
+    for item in result:
+
+        id    = item['_id']
+        input = item['source']['input']
+
+        reconstruction = model.serve([input])
+        loss           = mae(reconstruction, [input]).numpy()[0]
+
+        severity = 5 if loss >= 0
+        severity = 4 if loss >= 0.007
+        severity = 3 if loss >= 0.014
+        severity = 2 if loss >= 0.021
+        severity = 1 if loss >= 0.035
+
+        document = {
+            'severity'   : severity,
+            'prediction' : loss
+        }
+
+        elasticsearch_client.update(index = ELASTICSEARCH_INDEX, id = id, body = document)
 
     return {}
