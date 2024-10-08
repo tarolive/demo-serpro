@@ -67,7 +67,7 @@ def predict() -> dict:
     for item in result:
 
         id    = item['_id']
-        input = item['source']['input']
+        input = item['_source']['input']
 
         reconstruction = model.serve([input])
         loss           = mae(reconstruction, [input]).numpy()[0]
