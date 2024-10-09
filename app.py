@@ -36,21 +36,19 @@ def add_to_chat_ids() -> dict:
     text    = message['text']
     chat_id = message['chat']['id']
 
-    if not text.startswith('/add'):
+    if text.startswith('/start'):
 
+        sendMessage(chat_id, 'Hello... The app is working!')
         return {}
 
-    if chat_id not in chat_ids:
+    if text.startswith('/add'):
 
-        chat_ids.append(chat_id)
+        if chat_id not in chat_ids:
 
-    params = {
-        'chat_id' : chat_id,
-        'text'    : f'Chat id { chat_id } added to chat ids!'
-    }
+            chat_ids.append(chat_id)
 
-    api = f'{ TELEGRAM_API }/sendMessage'
-    get(url = api, params = params)
+        sendMessage(chat_id, f'Chat id { chat_id } added to chat ids and will receive ECG messages!')
+        return {}
 
     return {}
 
@@ -68,7 +66,7 @@ def predict() -> dict:
         }
     }
 
-    result = elasticsearch_client.search(index = ELASTICSEARCH_INDEX, query = query, size = 5)
+    result = elasticsearch_client.search(index = ELASTICSEARCH_INDEX, query = query, size = 30)
     result = result['hits']['hits']
 
     for item in result:
