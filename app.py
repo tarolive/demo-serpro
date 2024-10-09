@@ -101,7 +101,7 @@ def predict() -> dict:
 
                 reply_markup = {
                     'inline_keyboard' : [
-                        [{ 'text' : 'Yes', 'callback_data' : '/open_ticket' }]
+                        [{ 'text' : 'Yes', 'callback_data' : 'open_ticket' }]
                     ]
                 }
 
