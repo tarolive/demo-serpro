@@ -104,7 +104,7 @@ def predict() -> dict:
                     ]
                 }
 
-                sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', reply_markup)
+                sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', reply_markup = reply_markup)
 
     return {}
 
