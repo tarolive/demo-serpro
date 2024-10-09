@@ -1,9 +1,11 @@
 from elasticsearch           import Elasticsearch
 from flask                   import Flask, request
+from json                    import dumps
 from os                      import getenv
 from requests                import get
 from tensorflow.keras.losses import mae
 from tensorflow.saved_model  import load
+from time                    import sleep
 from urllib3                 import disable_warnings
 
 disable_warnings()
@@ -105,7 +107,9 @@ def predict() -> dict:
                     ]
                 }
 
-                sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', reply_markup)
+                sendMessage(chat_id, 'ECG with severity 1 detected! Do you want me to open a ticket?', dumps(reply_markup))
+
+        sleep(0.5)
 
     return {}
 
