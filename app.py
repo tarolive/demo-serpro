@@ -79,10 +79,10 @@ def predict() -> dict:
 
         severity = 5
 
-        if loss <= 0.056: severity = 4
-        if loss <= 0.049: severity = 3
-        if loss <= 0.042: severity = 2
-        if loss <= 0.035: severity = 1
+        if loss <= 0.091: severity = 4
+        if loss <= 0.090: severity = 3
+        if loss <= 0.087: severity = 2
+        if loss <= 0.086: severity = 1
 
         document = {
             'severity'   : severity,
