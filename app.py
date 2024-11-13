@@ -4,6 +4,7 @@ from json                    import dumps
 from os                      import getenv
 from requests                import get
 from tensorflow.keras.losses import mae
+from tensorflow.math         import less
 from tensorflow.saved_model  import load
 from time                    import sleep
 from urllib3                 import disable_warnings
@@ -79,10 +80,17 @@ def predict() -> dict:
 
         severity = 5
 
-        if loss <= 0.091: severity = 4
-        if loss <= 0.090: severity = 3
-        if loss <= 0.087: severity = 2
-        if loss <= 0.086: severity = 1
+        if less(loss, 0.091):
+            severity = 4
+
+        if less(loss, 0.090):
+            severity = 3
+
+        if less(loss, 0.087):
+            severity = 2
+
+        if less(loss, 0.086):
+            severity = 1
 
         document = {
             'severity'   : severity,
